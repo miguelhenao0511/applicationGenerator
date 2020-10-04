@@ -1,0 +1,38 @@
+{% extends "base_app_template.html" %}
+
+{% block head_content %}
+    <title>Application</title>
+{% endblock%}
+
+{% block container %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1> <!--#@templates_base_app_all_template_title--> </h1>
+            </div>
+            <div class="col-md-4">
+                <h1 class="text-right">
+                    <!--#@templates_base_app_all_link_to_create_item-->
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </h1>
+            </div>
+            <table class="table">
+                <thead>
+                <!--#@templates_base_app_all_table_field_header-->
+                <th>Actions</th>
+                </thead>
+                <tbody>
+                {% for app_object in app_objects %}
+                    <tr>
+                        <!--#@templates_base_app_all_table_field_value-->
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}
