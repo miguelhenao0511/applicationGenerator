@@ -1,4 +1,5 @@
 from django.urls import path
+from django.http import HttpResponseRedirect
 
 #@base_app_urls_imports
 

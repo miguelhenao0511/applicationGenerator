@@ -49,9 +49,15 @@ token_dictionary = {
             },
             "base_app_create": {
                 "path": "/base_app_create.html",
+                "template_title": "<!--#@templates_base_app_create_template_title-->",
+                "form_fields": "<!--#@templates_base_app_create_form_fields-->",
+                "back_button": "<!--#@templates_base_app_create_back_button-->",
             },
             "base_app_edit": {
                 "path": "/base_app_edit.html",
+                "template_title": "<!--#@templates_base_app_edit_template_title-->",
+                "form_fields": "<!--#@templates_base_app_edit_form_fields-->",
+                "back_button": "<!--#@templates_base_app_edit_back_button-->",
             },
         },
         "base_app_template": {

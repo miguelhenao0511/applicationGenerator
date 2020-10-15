@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from generator.views import copy_application, create_app
+from generator.views import create_application
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', copy_application),
-    path('create-app', create_app),
+    path('', create_application),
 ]

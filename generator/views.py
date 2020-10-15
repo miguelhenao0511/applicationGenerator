@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from applicationGenerator.utils.tokensDictionary import get_token as token_dictionary
 from distutils.dir_util import copy_tree
-from applicationGenerator.utils.classTemplate import ClassTemplate, AttributeTemplate, generate_random_class, get_random_string, get_random_integer, get_random_boolean, get_date
+from applicationGenerator.utils.classTemplate import ClassTemplate, AttributeTemplate, generate_random_class, \
+    get_random_string, get_random_integer, get_random_boolean, get_date
 import os
 
 BASE_DIRECTORY = os.getcwd() + "/resources/base_application/application"
@@ -12,23 +13,8 @@ BASE_APPLICATION_DIRECTORY = token_dictionary()["application"]["path"]
 
 
 # Create your views here.
-def copy_application(request):
+def create_application(request):
     copy_tree(BASE_DIRECTORY, OUT_DIRECTORY)
-
-    return HttpResponse(
-        "copy application from: {} to: {}".format(BASE_DIRECTORY, OUT_DIRECTORY))
-
-
-def create_app(request):
-    #random_class = generate_random_class(5)
-
-    product_class = ClassTemplate("Producto", [
-        AttributeTemplate("nombre", "string"),
-        AttributeTemplate("descripcion", "string"),
-        AttributeTemplate("valor", "integer"),
-        AttributeTemplate("disponible", "boolean"),
-        AttributeTemplate("fecha_publicacion", "datetime")
-    ])
 
     user_class = ClassTemplate("Usuario", [
         AttributeTemplate("nombre", "string"),
@@ -36,9 +22,28 @@ def create_app(request):
         AttributeTemplate("email", "string"),
         AttributeTemplate("password", "string")
     ])
+    product_class = ClassTemplate("Producto", [
+        AttributeTemplate("nombre", "string"),
+        AttributeTemplate("descripcion", "string"),
+        AttributeTemplate("valor", "integer"),
+        AttributeTemplate("disponible", "boolean"),
+        AttributeTemplate("fecha_publicacion", "datetime")
+    ])
+    random_class_1 = generate_random_class(3)
+    random_class_2 = generate_random_class(3)
+    random_class_3 = generate_random_class(5)
 
-    random_class = product_class
-    #random_class = user_class
+    create_app(user_class)
+    create_app(product_class)
+    create_app(random_class_1)
+    create_app(random_class_2)
+    create_app(random_class_3)
+
+    return HttpResponse(
+        "copy application from: {} to: {}".format(BASE_DIRECTORY, OUT_DIRECTORY))
+
+
+def create_app(random_class):
 
     new_app_directory = OUT_DIRECTORY + "/" + random_class.name
     # Create app
@@ -83,7 +88,8 @@ def create_app(request):
     print("Create new template in: {}".format(new_app_template_directory))
     print("")
 
-    new_app_template_all_directory = new_app_template_directory + token_dictionary()["templates"]["base_app_templates"]["base_app_all"]["path"]
+    new_app_template_all_directory = new_app_template_directory + \
+                                     token_dictionary()["templates"]["base_app_templates"]["base_app_all"]["path"]
     # Modify template all title
     replace_data_in_file(
         new_app_template_all_directory,
@@ -120,7 +126,8 @@ def create_app(request):
     print("Define template all table fields values: {}".format(new_app_template_all_directory))
     print("")
 
-    new_app_template_one_directory = new_app_template_directory + token_dictionary()["templates"]["base_app_templates"]["base_app_one"]["path"]
+    new_app_template_one_directory = new_app_template_directory + \
+                                     token_dictionary()["templates"]["base_app_templates"]["base_app_one"]["path"]
     # Modify template one title
     replace_data_in_file(
         new_app_template_one_directory,
@@ -136,16 +143,74 @@ def create_app(request):
         token_dictionary()["templates"]["base_app_templates"]["base_app_one"]["table_field_value"],
         create_template_one_table_fields_values(random_class)
     )
-    print("Define template one table fields values: {}".format(new_app_template_all_directory))
+    print("Define template one table fields values: {}".format(new_app_template_one_directory))
     print("")
 
-    # Modify template one back button
+    # Modify template get one back button
     replace_data_in_file(
         new_app_template_one_directory,
         token_dictionary()["templates"]["base_app_templates"]["base_app_one"]["back_button"],
         create_template_one_back_button(random_class)
     )
-    print("Define template one back button: {}".format(new_app_template_all_directory))
+    print("Define template get one back button: {}".format(new_app_template_one_directory))
+    print("")
+
+    new_app_template_create_directory = new_app_template_directory + \
+                                        token_dictionary()["templates"]["base_app_templates"]["base_app_create"]["path"]
+    # Modify template create title
+    replace_data_in_file(
+        new_app_template_create_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_create"]["template_title"],
+        create_template_create_title(random_class)
+    )
+    print("Define template create title: {}".format(new_app_template_create_directory))
+    print("")
+
+    # Modify template create form fields
+    replace_data_in_file(
+        new_app_template_create_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_create"]["form_fields"],
+        create_template_create_form_fields(random_class)
+    )
+    print("Define template create form fields: {}".format(new_app_template_create_directory))
+    print("")
+
+    # Modify template create back button
+    replace_data_in_file(
+        new_app_template_create_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_create"]["back_button"],
+        create_template_create_back_button(random_class)
+    )
+    print("Define template create back button: {}".format(new_app_template_create_directory))
+    print("")
+
+    new_app_template_edit_directory = new_app_template_directory + \
+                                      token_dictionary()["templates"]["base_app_templates"]["base_app_edit"]["path"]
+    # Modify template edit title
+    replace_data_in_file(
+        new_app_template_edit_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_edit"]["template_title"],
+        create_template_edit_title(random_class)
+    )
+    print("Define template edit title: {}".format(new_app_template_edit_directory))
+    print("")
+
+    # Modify template edit form fields
+    replace_data_in_file(
+        new_app_template_edit_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_edit"]["form_fields"],
+        create_template_edit_form_fields(random_class)
+    )
+    print("Define template edit form fields: {}".format(new_app_template_edit_directory))
+    print("")
+
+    # Modify template edit back button
+    replace_data_in_file(
+        new_app_template_edit_directory,
+        token_dictionary()["templates"]["base_app_templates"]["base_app_edit"]["back_button"],
+        create_template_edit_back_button(random_class)
+    )
+    print("Define template edit back button: {}".format(new_app_template_edit_directory))
     print("")
 
     new_app_views_directory = new_app_directory + token_dictionary()["base_app"]["views"]["path"]
@@ -177,7 +242,53 @@ def create_app(request):
     print("Define get one object to view in: {}".format(new_app_views_directory))
     print("")
 
-    application_urls_directory = OUT_DIRECTORY + BASE_APPLICATION_DIRECTORY + token_dictionary()["application"]["urls"]["path"]
+    # Add views create
+    replace_data_in_file(
+        new_app_views_directory,
+        token_dictionary()["base_app"]["views"]["methods"],
+        create_views_methods_create(random_class)
+    )
+    print("Define create view in: {}".format(new_app_views_directory))
+    print("")
+
+    # Add views store
+    replace_data_in_file(
+        new_app_views_directory,
+        token_dictionary()["base_app"]["views"]["methods"],
+        create_views_methods_store(random_class)
+    )
+    print("Define store object in: {}".format(new_app_views_directory))
+    print("")
+
+    # Add views edit
+    replace_data_in_file(
+        new_app_views_directory,
+        token_dictionary()["base_app"]["views"]["methods"],
+        create_views_methods_edit(random_class)
+    )
+    print("Define edit view in: {}".format(new_app_views_directory))
+    print("")
+
+    # Add views update
+    replace_data_in_file(
+        new_app_views_directory,
+        token_dictionary()["base_app"]["views"]["methods"],
+        create_views_methods_update(random_class)
+    )
+    print("Define update object in: {}".format(new_app_views_directory))
+    print("")
+
+    # Add views delete
+    replace_data_in_file(
+        new_app_views_directory,
+        token_dictionary()["base_app"]["views"]["methods"],
+        create_views_methods_delete(random_class)
+    )
+    print("Define delete object in: {}".format(new_app_views_directory))
+    print("")
+
+    application_urls_directory = OUT_DIRECTORY + BASE_APPLICATION_DIRECTORY + token_dictionary()["application"]["urls"][
+        "path"]
     # Add urls import
     replace_data_in_file(
         application_urls_directory,
@@ -196,6 +307,24 @@ def create_app(request):
     print("Define url pattern to get all view in: {}".format(application_urls_directory))
     print("")
 
+    # Add urls create pattern
+    replace_data_in_file(
+        application_urls_directory,
+        token_dictionary()["application"]["urls"]["url_patterns_path"],
+        create_urls_create_patterns_path(random_class, "create")
+    )
+    print("Define url pattern to create view in: {}".format(application_urls_directory))
+    print("")
+
+    # Add urls store pattern
+    replace_data_in_file(
+        application_urls_directory,
+        token_dictionary()["application"]["urls"]["url_patterns_path"],
+        create_urls_store_patterns_path(random_class, "store")
+    )
+    print("Define url pattern to store view in: {}".format(application_urls_directory))
+    print("")
+
     # Add urls get one pattern
     replace_data_in_file(
         application_urls_directory,
@@ -203,6 +332,33 @@ def create_app(request):
         create_urls_get_one_patterns_path(random_class, "get_one")
     )
     print("Define url pattern to get one view in: {}".format(application_urls_directory))
+    print("")
+
+    # Add urls edit pattern
+    replace_data_in_file(
+        application_urls_directory,
+        token_dictionary()["application"]["urls"]["url_patterns_path"],
+        create_urls_edit_patterns_path(random_class, "edit")
+    )
+    print("Define url pattern to edit view in: {}".format(application_urls_directory))
+    print("")
+
+    # Add urls update pattern
+    replace_data_in_file(
+        application_urls_directory,
+        token_dictionary()["application"]["urls"]["url_patterns_path"],
+        create_urls_update_patterns_path(random_class, "update")
+    )
+    print("Define url pattern to update view in: {}".format(application_urls_directory))
+    print("")
+
+    # Add urls delete pattern
+    replace_data_in_file(
+        application_urls_directory,
+        token_dictionary()["application"]["urls"]["url_patterns_path"],
+        create_urls_delete_patterns_path(random_class, "delete")
+    )
+    print("Define url pattern to delete view in: {}".format(application_urls_directory))
     print("")
 
     application_nav_directory = OUT_DIRECTORY + "/templates" + token_dictionary()["templates"]["nav"]["path"]
@@ -214,8 +370,6 @@ def create_app(request):
     )
     print("Define new nav item in: {}".format(application_nav_directory))
     print("")
-
-    return HttpResponse("Create class {}".format(random_class))
 
 
 def create_model_class_definition(model_name):
@@ -248,7 +402,8 @@ def create_settings_installed_local_app_definition(app_name):
 
 
 def create_views_import(class_object):
-    return "from {}.models import {}\n{}".format(class_object.name, class_object.name, token_dictionary()["application"]["settings"]["installed_local_apps"])
+    return "from {}.models import {}\n{}".format(class_object.name, class_object.name,
+                                                 token_dictionary()["application"]["settings"]["installed_local_apps"])
 
 
 def create_views_methods_get_all(class_object):
@@ -269,19 +424,127 @@ def get_one(request, id):
 {}""".format(class_object.name, "{'app_object': app_object}", token_dictionary()["base_app"]["views"]["methods"])
 
 
+def create_views_methods_create(class_object):
+    return """
+def create(request):
+    return render(request, '{}_templates/base_app_create.html')
+{}""".format(class_object.name, token_dictionary()["base_app"]["views"]["methods"])
+
+
+def create_views_methods_store(class_object):
+    return """
+def store(request):
+    app_object = {}.objects.create({})
+    """.format(class_object.name, create_views_object_attributes(class_object.attributes)) + """
+    redirectTo = '/{}/' + str(app_object.id)
+    return HttpResponseRedirect(redirectTo)
+{}""".format(class_object.name, token_dictionary()["base_app"]["views"]["methods"])
+
+
+def create_views_methods_edit(class_object):
+    return """
+def edit(request, id):
+    app_object = {}.objects.get(id=id)
+    """.format(class_object.name) + """
+    return render(request, '{}_templates/base_app_edit.html', {})
+{}""".format(class_object.name, "{'app_object': app_object}", token_dictionary()["base_app"]["views"]["methods"])
+
+
+def create_views_methods_update(class_object):
+    return """
+def update(request, id):
+    app_object = {}.objects.get(id=id)
+    """.format(class_object.name) + """
+    app_object.__dict__.update({})""".format(create_views_object_attributes(class_object.attributes)) + """
+    app_object.save()
+    
+    redirectTo = '/{}/' + str(app_object.id)
+    return HttpResponseRedirect(redirectTo)
+{}""".format(class_object.name, token_dictionary()["base_app"]["views"]["methods"])
+
+
+def create_views_methods_delete(class_object):
+    return """
+def delete(request, id):
+    {}.objects.filter(id=id).delete()
+    """.format(class_object.name) + """
+    return HttpResponseRedirect('/{}')
+{}""".format(class_object.name, class_object.name, token_dictionary()["base_app"]["views"]["methods"])
+
+
+def create_views_object_attributes(attributes):
+    response = []
+    for attribute in attributes:
+        if attribute.attribute_type == "boolean":
+            response.append("{}='{}' in request.POST".format(attribute.name, attribute.name))
+        else:
+            response.append("{}=request.POST['{}']".format(attribute.name, attribute.name))
+    return ",".join(response)
+
+
 def create_urls_import(class_object):
     return "import {}.views as {}_views\n{}".format(class_object.name, class_object.name,
-                                                     token_dictionary()["application"]["urls"]["import"])
+                                                    token_dictionary()["application"]["urls"]["import"])
 
 
 def create_urls_get_all_patterns_path(class_object, method):
-    return "path('{}/', {}_views.{}, name='{}'),\n\t{}".format(class_object.name, class_object.name, method, class_object.name,
-                                           token_dictionary()["application"]["urls"]["url_patterns_path"])
+    return "path('{}/', {}_views.{}, name='{}'),\n\t{}".format(class_object.name, class_object.name, method,
+                                                               class_object.name,
+                                                               token_dictionary()["application"]["urls"][
+                                                                   "url_patterns_path"])
 
 
 def create_urls_get_one_patterns_path(class_object, method):
-    return "path('{}/<slug:id>/', {}_views.{}, name='{}'),\n\t{}".format(class_object.name, class_object.name, method, class_object.name,
-                                           token_dictionary()["application"]["urls"]["url_patterns_path"])
+    return "path('{}/<slug:id>/', {}_views.{}, name='{}-details'),\n\t{}".format(class_object.name, class_object.name,
+                                                                                 method,
+                                                                                 class_object.name,
+                                                                                 token_dictionary()["application"][
+                                                                                     "urls"][
+                                                                                     "url_patterns_path"])
+
+
+def create_urls_create_patterns_path(class_object, method):
+    return "path('{}/create/', {}_views.{}, name='{}-create'),\n\t{}".format(class_object.name, class_object.name,
+                                                                             method,
+                                                                             class_object.name,
+                                                                             token_dictionary()["application"]["urls"][
+                                                                                 "url_patterns_path"])
+
+
+def create_urls_store_patterns_path(class_object, method):
+    return "path('{}/store/', {}_views.{}, name='{}-store'),\n\t{}".format(class_object.name, class_object.name, method,
+                                                                           class_object.name,
+                                                                           token_dictionary()["application"]["urls"][
+                                                                               "url_patterns_path"])
+
+
+def create_urls_edit_patterns_path(class_object, method):
+    return "path('{}/<slug:id>/edit', {}_views.{}, name='{}-edit'),\n\t{}".format(class_object.name, class_object.name,
+                                                                                  method,
+                                                                                  class_object.name,
+                                                                                  token_dictionary()["application"][
+                                                                                      "urls"][
+                                                                                      "url_patterns_path"])
+
+
+def create_urls_update_patterns_path(class_object, method):
+    return "path('{}/<slug:id>/update', {}_views.{}, name='{}-update'),\n\t{}".format(class_object.name,
+                                                                                      class_object.name,
+                                                                                      method,
+                                                                                      class_object.name,
+                                                                                      token_dictionary()["application"][
+                                                                                          "urls"][
+                                                                                          "url_patterns_path"])
+
+
+def create_urls_delete_patterns_path(class_object, method):
+    return "path('{}/<slug:id>/delete', {}_views.{}, name='{}-delete'),\n\t{}".format(class_object.name,
+                                                                                      class_object.name,
+                                                                                      method,
+                                                                                      class_object.name,
+                                                                                      token_dictionary()["application"][
+                                                                                          "urls"][
+                                                                                          "url_patterns_path"])
 
 
 def create_template_all_title(class_object):
@@ -292,12 +555,24 @@ def create_template_all_title(class_object):
 
 def create_template_one_title(class_object):
     return "{} item\n{}".format(class_object.name,
-                                     token_dictionary()["templates"]["base_app_templates"]["base_app_one"][
+                                token_dictionary()["templates"]["base_app_templates"]["base_app_one"][
+                                    "template_title"])
+
+
+def create_template_create_title(class_object):
+    return "{} create item\n{}".format(class_object.name,
+                                       token_dictionary()["templates"]["base_app_templates"]["base_app_create"][
+                                           "template_title"])
+
+
+def create_template_edit_title(class_object):
+    return "{} edit item\n{}".format(class_object.name,
+                                     token_dictionary()["templates"]["base_app_templates"]["base_app_edit"][
                                          "template_title"])
 
 
 def create_template_all_link_to_create_item(class_object):
-    return "<a href='{}'>".format("#")
+    return "<a href='{}'>".format("{% url " + "'{}-create'".format(class_object.name) + " %}")
 
 
 def create_template_all_table_fields_headers(class_object):
@@ -323,6 +598,57 @@ def create_template_one_table_fields_values(class_object):
     return response
 
 
+def create_template_create_form_fields(class_object):
+    response = "<form action='{}' method='POST' class='form-control'>\n{}\n".format(
+        "{% url " + "'{}-store'".format(class_object.name) + " %}",
+        "{% csrf_token %}")
+
+    for attribute in class_object.attributes:
+        response += create_template_form_field(attribute)
+
+    response += """
+<div class="form-group">
+    <input type="submit" class="btn btn-success form-control" value="Save">
+</div>
+    """
+
+    return response + "\n</form>"
+
+
+def create_template_edit_form_fields(class_object):
+    response = "<form action='{}' method='POST' class='form-control'>\n{}\n".format(
+        "{% url " + "'{}-update'".format(class_object.name) + " id=app_object.id %}",
+        "{% csrf_token %}")
+
+    for attribute in class_object.attributes:
+        response += create_template_form_field(attribute, "{{" + "app_object.{}".format(attribute.name) + "}}")
+
+    response += """
+<div class="form-group">
+    <input type="submit" class="btn btn-success form-control" value="Save">
+</div>
+    """
+
+    return response + "\n</form>"
+
+
+def create_template_form_field(attribute, value=""):
+    response = "<div class='form-group'>\n<label>{}</label>\n".format(attribute.name)
+    response += create_template_form_input(attribute, value)
+    return response + "</div>\n"
+
+
+def create_template_form_input(attribute, value):
+    attribute_type = "text"
+    if attribute.attribute_type == "integer":
+        attribute_type = "number"
+    elif attribute.attribute_type == "datetime":
+        attribute_type = "date"
+    elif attribute.attribute_type == "boolean":
+        attribute_type = "checkbox"
+    return "<input type='{}' class='form-control' name='{}' value='{}' />".format(attribute_type, attribute.name, value)
+
+
 def create_template_all_action_buttons(class_object):
     return """    
 <td>
@@ -336,11 +662,26 @@ def create_template_all_action_buttons(class_object):
         <i class="fas fa-trash mr-1 ml-1""></i>
     </a>
 </td>
-    """.format("{" + "% url '{}' id=app_object.id %".format(class_object.name) + "}", "#", "#")
+    """.format(
+        "{" + "% url '{}-details' id=app_object.id %".format(class_object.name) + "}",
+        "{" + "% url '{}-edit' id=app_object.id %".format(class_object.name) + "}",
+        "{" + "% url '{}-delete' id=app_object.id %".format(class_object.name) + "}"
+    )
 
 
 def create_template_one_back_button(class_object):
-    return "<a href='{}' class='btn btn-secondary'>Back</a>".format("{" + "% url '{}' %".format(class_object.name) + "}")
+    return "<a href='{}' class='btn btn-secondary'>Back</a>".format(
+        "{" + "% url '{}' %".format(class_object.name) + "}")
+
+
+def create_template_create_back_button(class_object):
+    return "<a href='{}' class='btn btn-secondary'>Back</a>".format(
+        "{" + "% url '{}' %".format(class_object.name) + "}")
+
+
+def create_template_edit_back_button(class_object):
+    return "<a href='{}' class='btn btn-secondary'>Back</a>".format(
+        "{" + "% url '{}' %".format(class_object.name) + "}")
 
 
 def create_nav_item(class_object):
@@ -351,7 +692,8 @@ def create_nav_item(class_object):
     </a>
 </li>
 {}
-    """.format("{" + "% url '{}' %".format(class_object.name) + "}", class_object.name, token_dictionary()["templates"]["nav"]["nav_item"])
+    """.format("{" + "% url '{}' %".format(class_object.name) + "}", class_object.name,
+               token_dictionary()["templates"]["nav"]["nav_item"])
 
 
 def replace_data_in_file(file_path, old_data, new_data):
