@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from generator.views import create_application
+from ui.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', create_application),
+    path('', index),
+    path('create_app', create_application, name='generate-application')
 ]

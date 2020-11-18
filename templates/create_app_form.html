@@ -1,0 +1,28 @@
+{% extends "base_web.html" %}
+
+{% block head_content %}
+    <title>Application Generator</title>
+{% endblock%}
+
+{% block container %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Create Django Application</h1>
+            </div>
+            <form class="form-control" action='{% url "generate-application" %}' method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="bpmn_file">BPMN File</label>
+                    <input class="form-control" type="file" name="bpmn_file" id="bpmn_file" accept=".bpmn" required/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success btn-block" value="Generate application"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
