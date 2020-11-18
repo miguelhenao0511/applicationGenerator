@@ -178,7 +178,7 @@ def generate_json_structure(file):
                     atributos = []
                     for campo in DOR.campos:
                         attrs = campo.split(":")
-                        if (len(attrs) > 2):
+                        if len(attrs) > 2:
                             atributos.append(atributo(attrs[1], attrs[0], attrs[2]))
                         else:
                             atributos.append(atributo(attrs[1], attrs[0]))
@@ -193,10 +193,11 @@ def generate_json_structure(file):
             # print(" atributo: nombre:", attr.nombre, "tipo: ", attr.tipo)
             dic1.setdefault('name', attr.nombre)
             dic1.setdefault('attribute_type', attr.tipo)
+            if attr.operation is not None:
+                dic1.setdefault('operation', attr.operation)
             att.append(dic1)
         dic.setdefault('name', dato.nombre)
         dic.setdefault('attributes', att)
         json.append(dic)
 
     return json
-    # return HttpResponse("Hola")

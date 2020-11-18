@@ -1,4 +1,5 @@
 import generator.utils.constants as constants
+import re
 from generator.utils.fileUtils import replace_data_in_file
 from applicationGenerator.utils.tokensDictionary import get_token as token_dictionary
 
@@ -24,7 +25,7 @@ def create_views_methods_update(class_object):
 def update(request, id):
     app_object = {}.objects.get(id=id)
     """.format(class_object.name) + """
-    app_object.__dict__.update({})""".format(create_object_attributes(class_object.attributes)) + """
+{}""".format(define_object_attributes(class_object.attributes)) + """
     app_object.save()
 
     redirectTo = '/{}/' + str(app_object.id)
@@ -32,11 +33,40 @@ def update(request, id):
 {}""".format(class_object.name, views_methods_token)
 
 
-def create_object_attributes(attributes):
-    response = []
+
+
+
+def define_object_attributes(attributes):
+    response = ""
     for attribute in attributes:
         if attribute.attribute_type == "boolean":
-            response.append("{}='{}' in request.POST".format(attribute.name, attribute.name))
+            response += ("""    app_object.{}='{}' in request.POST\n""".format(attribute.name, attribute.name))
+        elif attribute.attribute_type in "string,date,integer":
+            response += ("""    app_object.{}=request.POST['{}']\n""".format(attribute.name, attribute.name))
+        elif attribute.attribute_type == "calculated":
+            response += ("""    app_object.{}={}\n""".format(attribute.name, define_attribute_operation(attribute)))
         else:
-            response.append("{}=request.POST['{}']".format(attribute.name, attribute.name))
-    return ",".join(response)
+            if "[]" in attribute.attribute_type:
+                response += define_attribute_many_to_many(attribute)
+            else:
+                response += ("""    app_object.{}={}.objects.get(id=request.POST['{}'])\n""".format(attribute.name, attribute.name, attribute.name))
+
+    return response
+
+
+def define_attribute_operation(attribute):
+    operation = attribute.operation
+    regexExp = re.compile("\[+\w+\]")
+    object_operands = regexExp.findall(attribute.operation)
+    for object_operand in object_operands:
+        operation = operation.replace(object_operand,
+                                      "int(app_object.{})".format(object_operand.replace("[", "").replace("]", "")))
+    return "{}".format(operation)
+
+
+def define_attribute_many_to_many(attribute):
+    return """
+    app_object.{}.clear()
+    for {}_id in request.POST.getlist('{}'):
+        app_object.{}.add({}.objects.get(id={}_id))        
+""".format(attribute.name, attribute.name, attribute.name, attribute.name, attribute.name, attribute.name)

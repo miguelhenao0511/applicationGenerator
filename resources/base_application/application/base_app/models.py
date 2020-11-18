@@ -4,3 +4,5 @@ from django.db import models
 # Create your models here.
 #@base_app_model_class
     #@base_app_model_attributes
+
+    #@base_app_model_str_function

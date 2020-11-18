@@ -56,10 +56,20 @@ def create_title(class_object):
 def create_table_fields_values(class_object):
     response = ""
     for attribute in class_object.attributes:
-        app_object = "{{" + "app_object.{}".format(attribute.name) + "}}"
-        response = response + "<tr>\n<td>{}:<td>\n<td>{}<td>\n</tr>\n".format(attribute.name, app_object)
+        if "[]" in attribute.attribute_type:
+            response += define_table_many_to_many_values(attribute)
+        else:
+            app_object = "{{" + "app_object.{}".format(attribute.name) + "}}"
+            response = response + "<tr>\n<td>{}:<td>\n<td>{}<td>\n</tr>\n".format(attribute.name, app_object)
     return response
 
+
+def define_table_many_to_many_values(attribute):
+    response = "<tr>\n<td>{}</td>\n".format(attribute.name)
+    response += "<td>\n{% for " + "{} in app_object.{}.all ".format(attribute.name, attribute.name) + "%}\n"
+    response += "<p>{{ " + "{}".format(attribute.name) + " }}</p>\n"
+    response += "{% endfor %}\n </td>\n </tr>"
+    return response
 
 def create_back_button(class_object):
     return "<a href='{}' class='btn btn-secondary'>Back</a>".format(

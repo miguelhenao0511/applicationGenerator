@@ -70,21 +70,55 @@ def create_form_fields(class_object):
     return response + "\n</form>"
 
 
-def create_form_field(attribute, value=""):
-    response = "<div class='form-group'>\n<label>{}</label>\n".format(attribute.name)
-    response += create_form_input(attribute, value)
-    return response + "</div>\n"
+def create_form_field(attribute, value):
+    if attribute.attribute_type != "calculated":
+        response = "<div class='form-group'>\n<label>{}</label>\n".format(attribute.name)
+        response += create_form_input(attribute, value)
+        return response + "</div>\n"
+    return ""
 
 
 def create_form_input(attribute, value):
-    attribute_type = "text"
-    if attribute.attribute_type == "integer":
+    if attribute.attribute_type == "string":
+        attribute_type = "text"
+    elif attribute.attribute_type == "integer":
         attribute_type = "number"
     elif attribute.attribute_type == "datetime":
         attribute_type = "date"
     elif attribute.attribute_type == "boolean":
         attribute_type = "checkbox"
+    else:
+        if "[]" in attribute.attribute_type:
+            return create_multiselect(attribute)
+        else:
+            return create_select(attribute)
     return "<input type='{}' class='form-control' name='{}' value='{}' />".format(attribute_type, attribute.name, value)
+
+
+def create_multiselect(attribute):
+    return """
+<div class="row">
+{}""".format("{% for"+" {}_item in {}_list ".format(attribute.name, attribute.name)+"%}") + """
+<div class="col-6">
+    <div class='form-inline'>
+        <input type='checkbox' class='form-control' name='{}' value='{}'/>""".format(attribute.name, "{{"+" {}_item.id ".format(attribute.name)+"}}") + """
+        <label class="ml-3">{}</label>""".format("{{"+" {}_item ".format(attribute.name)+"}}") + """
+    </div>
+</div>
+{% endfor %}   
+</div> 
+"""
+
+
+def create_select(attribute):
+    return """
+<select class="form-control" name="{}">
+<option value=""></option>
+{}""".format(attribute.name, "{% for"+" {}_item in {}_list ".format(attribute.name, attribute.name)+"%}") + """
+    <option value="{}">{}</option>""".format("{{"+" {}_item.id ".format(attribute.name)+"}}", "{{"+" {}_item ".format(attribute.name)+"}}") + """
+{% endfor %}
+</select>    
+"""
 
 
 def create_back_button(class_object):

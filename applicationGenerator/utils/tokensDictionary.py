@@ -18,6 +18,7 @@ token_dictionary = {
             "import": "#@base_app_model_import",
             "class": "#@base_app_model_class",
             "attributes": "#@base_app_model_attributes",
+            "str_function": "#@base_app_model_str_function",
         },
         "views": {
             "path": "/views.py",

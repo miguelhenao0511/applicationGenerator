@@ -13,9 +13,10 @@ class ClassTemplate:
 
 
 class AttributeTemplate:
-    def __init__(self, name, attribute_type):
+    def __init__(self, name, attribute_type, operation=None):
         self.name = name
         self.attribute_type = attribute_type
+        self.operation = operation
 
     def __str__(self):
         return "name: {}, type: {}".format(self.name, self.attribute_type)

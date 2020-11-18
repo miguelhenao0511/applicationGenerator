@@ -72,15 +72,17 @@ def create_link_to_create_item(class_object):
 def create_table_fields_headers(class_object):
     response = ""
     for attribute in class_object.attributes:
-        response = response + "<th>{}<th>\n".format(attribute.name)
+        if attribute.attribute_type in "string,integer,boolean,date,calculated":
+            response = response + "<th>{}<th>\n".format(attribute.name)
     return response
 
 
 def create_table_fields_values(class_object):
     response = ""
     for attribute in class_object.attributes:
-        object = "{{" + "app_object.{}".format(attribute.name) + "}}"
-        response = response + "<td>{}<td>\n".format(object)
+        if attribute.attribute_type in "string,integer,boolean,date,calculated":
+            object = "{{" + "app_object.{}".format(attribute.name) + "}}"
+            response = response + "<td>{}<td>\n".format(object)
     return response + create_action_buttons(class_object)
 
 
