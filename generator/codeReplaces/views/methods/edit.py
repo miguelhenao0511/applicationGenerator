@@ -32,7 +32,7 @@ def edit(request, id):
 def create_call_list_items(class_object):
     response = ""
     for attribute in class_object.attributes:
-        if attribute.attribute_type not in "string,integer,boolean,date,calculated":
+        if attribute.attribute_type not in "string,integer,double,boolean,date,calculated":
             response += """
     {}_list = {}.objects.all()
 """.format(attribute.name, attribute.name)
@@ -43,7 +43,7 @@ def create_call_list_items(class_object):
 def create_parameters_to_send_view(class_object):
     response = "{'app_object': app_object"
     for attribute in class_object.attributes:
-        if attribute.attribute_type not in "string,integer,boolean,date,calculated":
+        if attribute.attribute_type not in "string,integer,double,boolean,date,calculated":
             response += ", '{}_list': {}_list".format(attribute.name, attribute.name)
 
     return response + '}'

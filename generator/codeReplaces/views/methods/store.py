@@ -55,7 +55,7 @@ def define_attribute_operation(attribute):
     object_operands = regexExp.findall(attribute.operation)
     for object_operand in object_operands:
         operation = operation.replace(object_operand,
-                                      "int(app_object.{})".format(object_operand.replace("[", "").replace("]", "")))
+                                      "app_object.{}".format(object_operand.replace("[", "").replace("]", "")))
     return "{}".format(operation)
 
 

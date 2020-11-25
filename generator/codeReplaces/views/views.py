@@ -41,7 +41,7 @@ def define_import(class_object):
 
 def define_attributes_import(class_object):
     for attribute in class_object.attributes:
-        if attribute.attribute_type not in "string,integer,boolean,date,calculated":
+        if attribute.attribute_type not in "string,integer,double,boolean,date,calculated":
             # Add views import
             replace_data_in_file(
                 views_directory,

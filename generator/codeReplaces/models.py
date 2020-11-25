@@ -30,16 +30,14 @@ def define_models(class_object):
     print("Define new attributes in: {}".format(models_directory))
     print("")
 
-
     # Define model str function
-    #replace_data_in_file(
-    #    models_directory,
-    #    models_token["str_function"],
-    #    create_str_function(class_object)
-    #)
-    #print("Define new str function in: {}".format(models_directory))
-    #print("")
-
+    replace_data_in_file(
+        models_directory,
+        models_token["attributes"], #like a str_function
+        create_str_function(class_object)
+    )
+    print("Define new str function in: {}".format(models_directory))
+    print("")
 
 
 def define_import_model(model_name):
@@ -54,9 +52,7 @@ def define_import_model(model_name):
 
 
 def create_str_function(class_object):
-    return """def __str__(self):
-        return "{}".format({})    
-    """.format(create_str_template(class_object), create_str_values(class_object))
+    return 'def __str__(self):\n\t\treturn "{}".format({})\n'.format(create_str_template(class_object), create_str_values(class_object))
 
 
 def create_str_template(class_object):
@@ -67,7 +63,7 @@ def create_str_template(class_object):
     if len(response) == 0:
         response.append("id: {}, class_of: {}")
     response = ", ".join(response)
-    return "{"+response+"}"
+    return response
 
 
 def create_str_values(class_object):
@@ -92,17 +88,19 @@ def create_model_class_definition(model_name):
 
 
 def create_model_attributes_definition(attributes):
-    response = "{}\n".format(models_token["attributes"])
+    response = "\n"
     for attribute in attributes:
         print("model attribute definition created")
         response = response + "\t{} = models.{}\n".format(attribute.name, create_model_attribute_type_definition(
             attribute.attribute_type))
-    return response
+    return response + "\t{}\n".format(models_token["attributes"])
 
 
 def create_model_attribute_type_definition(attribute_type):
-    if attribute_type == "integer" or attribute_type == "calculated":
+    if attribute_type == "integer":
         return "IntegerField(blank = True, null=True)"
+    elif attribute_type == "double" or attribute_type == "calculated":
+        return "DecimalField(max_digits=19, decimal_places=4, blank = True, null=True)"
     elif attribute_type == "boolean":
         return "BooleanField(blank = True, null=True)"
     elif attribute_type == "datetime":
