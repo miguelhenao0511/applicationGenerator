@@ -84,7 +84,7 @@ def create_form_input(attribute):
     elif attribute.attribute_type == "integer":
         attribute_type = "number"
     elif attribute.attribute_type == "double":
-        return "<input type='number' step='0' class='form-control' name='{}' />".format(attribute.name)
+        return "<input type='number' step='0.0001' class='form-control' name='{}' />".format(attribute.name)
     elif attribute.attribute_type == "datetime":
         attribute_type = "date"
     elif attribute.attribute_type == "boolean":

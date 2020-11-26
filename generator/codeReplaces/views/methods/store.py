@@ -36,7 +36,7 @@ def define_object_attributes(attributes):
     for attribute in attributes:
         if attribute.attribute_type == "boolean":
             response += ("""    app_object.{}='{}' in request.POST\n""".format(attribute.name, attribute.name))
-        elif attribute.attribute_type in "string,date,integer":
+        elif attribute.attribute_type in "string,date,integer,double":
             response += ("""    app_object.{}=request.POST['{}']\n""".format(attribute.name, attribute.name))
         elif attribute.attribute_type == "calculated":
             response += ("""    app_object.{}={}\n""".format(attribute.name, define_attribute_operation(attribute)))
@@ -55,7 +55,7 @@ def define_attribute_operation(attribute):
     object_operands = regexExp.findall(attribute.operation)
     for object_operand in object_operands:
         operation = operation.replace(object_operand,
-                                      "app_object.{}".format(object_operand.replace("[", "").replace("]", "")))
+                                      "float(app_object.{})".format(object_operand.replace("[", "").replace("]", "")))
     return "{}".format(operation)
 
 
